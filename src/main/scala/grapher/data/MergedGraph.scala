@@ -1,9 +1,9 @@
 package grapher.data
 
 case class MergedGraph[GV, VV, EV](graphValues: Vector[GV],
-                                   vertices: Vector[Vertex[VV]],
+                                   vertices: Vector[VV],
                                    edges: Seq[Edge[EV]]
-                                  ) {
+                                  ) extends Graph[VV, EV] {
   def size: Int = vertices.size
 
   def isEmpty: Boolean = vertices.isEmpty
@@ -34,7 +34,7 @@ case class MergedGraph[GV, VV, EV](graphValues: Vector[GV],
     )
   }
 
-  private[grapher] def addVertex(vertex: Vertex[VV]): MergedGraph[GV, VV, EV] = {
+  private[grapher] def addVertex(vertex: VV): MergedGraph[GV, VV, EV] = {
     MergedGraph(
       graphValues = graphValues,
       vertices = vertex +: vertices,

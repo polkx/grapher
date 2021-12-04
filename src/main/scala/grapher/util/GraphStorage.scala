@@ -1,6 +1,6 @@
 package grapher.util
 
-import grapher.data.{AllGraphs, Vertex}
+import grapher.data.AllGraphs
 
 trait GraphStorage[GV, VV, EV] extends GraphConnector[GV, VV, EV] {
 
@@ -21,7 +21,7 @@ trait GraphStorage[GV, VV, EV] extends GraphConnector[GV, VV, EV] {
    */
   def batchProcess(allGraphs: AllGraphs[GV, VV, EV]): AllGraphs[GV, VV, EV]
 
-  final def process(incomingVertex: Vertex[VV]): Unit = {
+  final def process(incomingVertex: VV): Unit = {
     allGraphs = process(incomingVertex, allGraphs)
   }
 

@@ -2,7 +2,7 @@ package grapher
 
 import grapher.GraphProcessingSpec.processVertices
 import grapher.data.{AllGraphs, EnrichedGraph}
-import grapher.util.GraphCompareHelper
+import grapher.util.{GraphCompareHelper, TestVertex}
 import grapher.util.GraphConnectorSpec.{edge, graph, oneElementFreshGraph, vertex}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.wordspec.AnyWordSpec
@@ -19,7 +19,7 @@ class GraphProcessingSpec extends AnyWordSpec with BeforeAndAfterEach {
     "return empty all graphs when no vertices arrived" in {
       TestGraphProcessing.runBatchProcess()
       val connectedVertices = TestGraphProcessing.allGraphs
-      val outputGraphs = AllGraphs.empty[String, String, String]
+      val outputGraphs = AllGraphs.empty[String, TestVertex, String]
       GraphCompareHelper.compare(connectedVertices, outputGraphs)
     }
 
@@ -78,7 +78,7 @@ class GraphProcessingSpec extends AnyWordSpec with BeforeAndAfterEach {
 
       processVertices(10001)
       val connectedVertices_2 = TestGraphProcessing.allGraphs
-      val outputGraphs_2: AllGraphs[String, String, String] = AllGraphs(
+      val outputGraphs_2: AllGraphs[String, TestVertex, String] = AllGraphs(
         enrichedGraphs = Seq.empty,
         freshGraphs = Seq(oneElementFreshGraph(2)),
         mergedGraphs = Seq.empty

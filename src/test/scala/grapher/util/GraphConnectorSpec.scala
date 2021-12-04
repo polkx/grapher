@@ -9,15 +9,15 @@ class GraphConnectorSpec extends AnyWordSpec {
 
     "return allGraphs with one fresh Graph" in {
       val inputGraphs = AllGraphs(
-        enrichedGraphs = Vector.empty[EnrichedGraph[String, String, String]],
-        freshGraphs = Vector.empty[FreshGraph[String, String]],
-        mergedGraphs = Vector.empty[MergedGraph[String, String, String]]
+        enrichedGraphs = Vector.empty[EnrichedGraph[String, TestVertex, String]],
+        freshGraphs = Vector.empty[FreshGraph[TestVertex, String]],
+        mergedGraphs = Vector.empty[MergedGraph[String, TestVertex, String]]
       )
 
       val outputGraphs = AllGraphs(
-        enrichedGraphs = Vector.empty[EnrichedGraph[String, String, String]],
+        enrichedGraphs = Vector.empty[EnrichedGraph[String, TestVertex, String]],
         freshGraphs = Vector(oneElementFreshGraph(101)),
-        mergedGraphs = Vector.empty[MergedGraph[String, String, String]]
+        mergedGraphs = Vector.empty[MergedGraph[String, TestVertex, String]]
       )
 
       val processedInput = TestGraphConnector.process(vertex101, inputGraphs)
@@ -289,33 +289,33 @@ object GraphConnectorSpec {
     )
   )
 
-  private[grapher] def vertex(id: Int): Vertex[String] = {
-    Vertex(id, s"${id.toString.takeRight(2).toInt}_v")
+  private[grapher] def vertex(id: Int): TestVertex = {
+    TestVertex(id, s"${id.toString.takeRight(2).toInt}_v")
   }
 
   private[grapher] def edge(source: Int, target: Int): Edge[String] = {
     Edge(source, target, s"$source-$target")
   }
 
-  private[grapher] def oneElementGraph(id: Int, vertexId: Int): EnrichedGraph[String, String, String] = {
+  private[grapher] def oneElementGraph(id: Int, vertexId: Int): EnrichedGraph[String, TestVertex, String] = {
     EnrichedGraph(s"${id}_g", Vector(vertex(vertexId)), Seq.empty)
   }
 
-  private[grapher] def graph(id: Int, edges: Edge[String]*): EnrichedGraph[String, String, String] = {
+  private[grapher] def graph(id: Int, edges: Edge[String]*): EnrichedGraph[String, TestVertex, String] = {
     val vertices = verticesFromEdges(edges)
     EnrichedGraph(s"${id}_g", vertices, edges.toList)
   }
 
-  private[grapher] def oneElementFreshGraph(vertexId: Int): FreshGraph[String, String] = {
+  private[grapher] def oneElementFreshGraph(vertexId: Int): FreshGraph[TestVertex, String] = {
     FreshGraph(Vector(vertex(vertexId)), Seq.empty)
   }
 
-  private[grapher] def freshGraph(edges: Edge[String]*): FreshGraph[String, String] = {
+  private[grapher] def freshGraph(edges: Edge[String]*): FreshGraph[TestVertex, String] = {
     val vertices = verticesFromEdges(edges)
     FreshGraph(vertices, edges.toList)
   }
 
-  private def verticesFromEdges(edges: Seq[Edge[String]]): Vector[Vertex[String]] = {
+  private def verticesFromEdges(edges: Seq[Edge[String]]): Vector[TestVertex] = {
     edges
       .flatMap(edge => Vector(edge.source, edge.target))
       .map(vertexId => vertex(vertexId.toInt))

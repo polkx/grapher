@@ -1,10 +1,13 @@
 package grapher
 
-import grapher.data.Vertex
+import grapher.util.TestVertex
 
 trait ConnectionVerticesHelper {
-  def connectVertices(source: Vertex[String],
-                      target: Vertex[String]): Option[String] = {
+
+  def vertexId: TestVertex => Long = _.id
+
+  def connectVertices(source: TestVertex,
+                      target: TestVertex): Option[String] = {
     val condition = source.value == target.value
     val edgeValue = s"${source.id}-${target.id}"
 

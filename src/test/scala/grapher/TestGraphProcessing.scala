@@ -1,9 +1,10 @@
 package grapher
 
 import grapher.data.{AllGraphs, EnrichedGraph}
+import grapher.util.TestVertex
 
 object TestGraphProcessing
-  extends GraphProcessing[String, String, String]
+  extends GraphProcessing[String, TestVertex, String]
     with ConnectionVerticesHelper {
   private val minGraphSize = 2
   private val maxGraphSize = 3
@@ -11,7 +12,7 @@ object TestGraphProcessing
 
   def resetCounter(): Unit = freshCounter = 1
 
-  override def batchProcess(allGraphs: AllGraphs[String, String, String]): AllGraphs[String, String, String] = {
+  override def batchProcess(allGraphs: AllGraphs[String, TestVertex, String]): AllGraphs[String, TestVertex, String] = {
     val (skippedFreshGraphs, enrichedFreshGraphs) = allGraphs.freshGraphs
       .foldLeft(Seq.empty[FreshGh], Seq.empty[EnrichedGh]) {
         case ((skippedFreshGraphsAcc, enrichedFreshGraphsAcc), freshGraph)

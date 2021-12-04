@@ -8,13 +8,20 @@ trait GraphConnector[GV, VV, EV] extends GraphAliases[GV, VV, EV] {
   private val emptyFreshGraph = FreshGraph.empty[VV, EV]
 
   /**
+   * Get id from vertex
+   *
+   * @return vertex id
+   */
+  def vertexId: VV => Long
+
+  /**
    * How edges will be joined
    *
    * @param source         vertex from local storage
    * @param incomingVertex incoming vertex to connect
    * @return created edge. If empty vertices are not connected.
    */
-  def connectVertices(source: Vertex[VV], incomingVertex: Vertex[VV]): Option[EV]
+  def connectVertices(source: VV, incomingVertex: VV): Option[EV]
 
   /**
    * Override when you want create edges based on enriched graph
@@ -23,7 +30,7 @@ trait GraphConnector[GV, VV, EV] extends GraphAliases[GV, VV, EV] {
    * @param enrichedGraph  enriched graph from local graph storage
    * @return connected edges to enriched graph
    */
-  def createEdges(incomingVertex: Vertex[VV],
+  def createEdges(incomingVertex: VV,
                   enrichedGraph: EnrichedGh): Seq[Edge[EV]] = {
     createEdges(incomingVertex, enrichedGraph.vertices)
   }
@@ -35,12 +42,12 @@ trait GraphConnector[GV, VV, EV] extends GraphAliases[GV, VV, EV] {
    * @param mergedGraph    merged graph from local graph storage
    * @return connected edges to merged graph
    */
-  def createEdges(incomingVertex: Vertex[VV],
+  def createEdges(incomingVertex: VV,
                   mergedGraph: MergedGh): Seq[Edge[EV]] = {
     createEdges(incomingVertex, mergedGraph.vertices)
   }
 
-  private[grapher] def process(incomingVertex: Vertex[VV],
+  private[grapher] def process(incomingVertex: VV,
                              allGraphs: AllGraphs[GV, VV, EV]
                             ): AllGraphs[GV, VV, EV] = {
     val (notConnectedMergedGraphs, connectedMergedGraph) =
@@ -81,7 +88,7 @@ trait GraphConnector[GV, VV, EV] extends GraphAliases[GV, VV, EV] {
     }
   }
 
-  private def connectToMergedGraphs(incomingVertex: Vertex[VV],
+  private def connectToMergedGraphs(incomingVertex: VV,
                                     connectedGraphs: Seq[MergedGh]
                                    ): (Seq[MergedGh], MergedGh) = {
     connectedGraphs.foldLeft(Seq.empty[MergedGh], emptyMergedGraph) {
@@ -100,7 +107,7 @@ trait GraphConnector[GV, VV, EV] extends GraphAliases[GV, VV, EV] {
     }
   }
 
-  private def connectToEnrichedGraphs(incomingVertex: Vertex[VV],
+  private def connectToEnrichedGraphs(incomingVertex: VV,
                                       graphs: Seq[EnrichedGh]
                                      ): (Seq[EnrichedGh], MergedGh) = {
     graphs.foldLeft(Seq.empty[EnrichedGh], emptyMergedGraph) {
@@ -119,7 +126,7 @@ trait GraphConnector[GV, VV, EV] extends GraphAliases[GV, VV, EV] {
     }
   }
 
-  private def connectFreshGraphs(incomingVertex: Vertex[VV],
+  private def connectFreshGraphs(incomingVertex: VV,
                                  freshGraphs: Seq[FreshGh]
                                 ): (Seq[FreshGh], FreshGh) = {
     freshGraphs.foldLeft(Seq.empty[FreshGh], emptyFreshGraph) {
@@ -138,16 +145,16 @@ trait GraphConnector[GV, VV, EV] extends GraphAliases[GV, VV, EV] {
     }
   }
 
-  private def createEdges(incomingVertex: Vertex[VV],
-                          vertexInGraph: Vector[Vertex[VV]]): Seq[Edge[EV]] = {
+  private def createEdges(incomingVertex: VV,
+                          vertexInGraph: Vector[VV]): Seq[Edge[EV]] = {
     vertexInGraph.foldLeft(Seq.empty[Edge[EV]]) {
       case (edgesFromIncomingVertex, vertex) =>
         val edgeValueOpt = connectVertices(vertex, incomingVertex)
 
         if (edgeValueOpt.isDefined) {
           val edge = Edge(
-            source = vertex.id,
-            target = incomingVertex.id,
+            source = vertexId(vertex),
+            target = vertexId(incomingVertex),
             value = edgeValueOpt.get
           )
 

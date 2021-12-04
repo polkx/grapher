@@ -1,8 +1,9 @@
 package grapher.data
 
 case class EnrichedGraph[GV, VV, EV](value: GV,
-                                     vertices: Vector[Vertex[VV]],
-                                     edges: Seq[Edge[EV]]) {
+                                     vertices: Vector[VV],
+                                     edges: Seq[Edge[EV]]
+                                    ) extends Graph[VV, EV] {
 
   def size: Int = vertices.size
 

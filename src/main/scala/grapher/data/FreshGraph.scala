@@ -1,7 +1,8 @@
 package grapher.data
 
-case class FreshGraph[VV, EV](vertices: Vector[Vertex[VV]],
-                              edges: Seq[Edge[EV]]) {
+case class FreshGraph[VV, EV](vertices: Vector[VV],
+                              edges: Seq[Edge[EV]]
+                             ) extends Graph[VV, EV] {
 
   def size: Int = vertices.size
 
@@ -16,7 +17,7 @@ case class FreshGraph[VV, EV](vertices: Vector[Vertex[VV]],
     )
   }
 
-  private[grapher] def addVertex(vertex: Vertex[VV]): FreshGraph[VV, EV] = {
+  private[grapher] def addVertex(vertex: VV): FreshGraph[VV, EV] = {
     FreshGraph(
       vertices = vertex +: vertices,
       edges = edges
@@ -33,8 +34,8 @@ case class FreshGraph[VV, EV](vertices: Vector[Vertex[VV]],
 
 object FreshGraph {
   def empty[VV, EV]: FreshGraph[VV, EV] =
-    FreshGraph(Vector.empty[Vertex[VV]], Seq.empty[Edge[EV]])
+    FreshGraph(Vector.empty[VV], Seq.empty[Edge[EV]])
 
-  def apply[VV, EV](vertex: Vertex[VV]): FreshGraph[VV, EV] =
+  def apply[VV, EV](vertex: VV): FreshGraph[VV, EV] =
     FreshGraph(Vector(vertex), Seq.empty[Edge[EV]])
 }
